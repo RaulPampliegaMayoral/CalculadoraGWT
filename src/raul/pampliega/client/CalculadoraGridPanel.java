@@ -7,7 +7,9 @@ import com.sencha.gxt.widget.core.client.Composite;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.sencha.gxt.widget.core.client.form.TextField;
+import com.sencha.gxt.widget.core.client.tips.ToolTipConfig;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -78,7 +80,6 @@ public class CalculadoraGridPanel extends Composite implements SelectHandler {
 		configurarBoton(btIgual,"=");
 		configurarBoton(btPunto,".");
 		configurarBoton(btBin,"01001");
-		
 		
 		txtNumeros.setWidth("100%");
 		grid.setWidget(0,0, txtNumeros);
@@ -222,12 +223,14 @@ public class CalculadoraGridPanel extends Composite implements SelectHandler {
 				
 				@Override
 				public void onSuccess(String result) {
-					Window.alert(result);
+					final ToolTipConfig tooltip = new ToolTipConfig("Código Binario", result);
+					btBin.setToolTipConfig(tooltip);
 				}
 				
 				@Override
 				public void onFailure(Throwable caught) {
-					Window.alert("Fallo al convertir a binario");
+					final ToolTipConfig tooltip = new ToolTipConfig("Código Binario", "Fallo al convertir el número");
+					btBin.setToolTipConfig(tooltip);
 				}
 			});
 		}
