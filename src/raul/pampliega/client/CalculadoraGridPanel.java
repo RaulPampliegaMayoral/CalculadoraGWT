@@ -1,8 +1,11 @@
 package raul.pampliega.client;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.sencha.gxt.cell.core.client.ButtonCell.ButtonScale;
 import com.sencha.gxt.widget.core.client.Composite;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Grid;
 import com.sencha.gxt.widget.core.client.form.TextField;
 import com.google.gwt.user.client.ui.Widget;
@@ -40,11 +43,14 @@ public class CalculadoraGridPanel extends Composite implements SelectHandler {
 	private final TextButton btDiv = new TextButton();
 	private final TextButton btIgual = new TextButton();
 	private final TextButton btPunto = new TextButton();
+	private final TextButton btBin   = new TextButton();
 	private final TextField txtNumeros = new TextField();
 	 
 	private float operando = Float.MIN_VALUE;		///Va a indicar el valor del numero antes de pulsar el operando
 	private int operador   = OPERADOR_SINOPERADOR;	///Va a indicar el tipo de operación que se quiere hacer
 	private boolean nuevo  = true;					///Indica si hay que introducir un nuevo numero en el texto o concatenamos al que hay
+		
+	private ConversorBinarioServiceAsync conversor = ( ConversorBinarioServiceAsync) GWT.create(ConversorBinarioService.class);
 	
 	public CalculadoraGridPanel() 
 	{
@@ -71,6 +77,7 @@ public class CalculadoraGridPanel extends Composite implements SelectHandler {
 		configurarBoton(btDiv,"/");
 		configurarBoton(btIgual,"=");
 		configurarBoton(btPunto,".");
+		configurarBoton(btBin,"01001");
 		
 		
 		txtNumeros.setWidth("100%");
@@ -102,6 +109,7 @@ public class CalculadoraGridPanel extends Composite implements SelectHandler {
 		
 		grid.setWidget(4, 0, bt0);
 		grid.setWidget(4, 1, btPunto);
+		grid.setWidget(4, 2, btBin);
 		grid.setWidget(4, 4, btIgual);
 		
 		txtNumeros.setEnabled(false);
@@ -207,6 +215,21 @@ public class CalculadoraGridPanel extends Composite implements SelectHandler {
 			if( v.startsWith("-") )
 				 txtNumeros.setText(v.substring(1));
 			else txtNumeros.setText("-" + txtNumeros.getText());
+		}
+		else if( sender == btBin )
+		{
+			conversor.convertir(txtNumeros.getText(), new AsyncCallback<String>() {
+				
+				@Override
+				public void onSuccess(String result) {
+					Window.alert(result);
+				}
+				
+				@Override
+				public void onFailure(Throwable caught) {
+					Window.alert("Fallo al convertir a binario");
+				}
+			});
 		}
 	}
 }

@@ -40,7 +40,7 @@ public class CalculadoraGWT implements EntryPoint {
 
 	@Override
 	public void onModuleLoad() {
-		RootPanel.get().add(iniciar());
+		RootPanel.get("calculadora").add(iniciar());
 		
 	}
 }

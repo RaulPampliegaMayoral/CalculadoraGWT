@@ -15,6 +15,16 @@
     <servlet-name>greetServlet</servlet-name>
     <url-pattern>/calculadoragwt/greet</url-pattern>
   </servlet-mapping>
+
+  <servlet>
+  	<servlet-name>conversorServlet</servlet-name>
+  	<servlet-class>raul.pampliega.server.ConversorBinarioServiceImpl</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+  	<servlet-name>conversorServlet</servlet-name>
+  	<url-pattern>/calculadoragwt/conversor</url-pattern>
+  </servlet-mapping>
   
   <!-- Default page to serve -->
   <welcome-file-list>
