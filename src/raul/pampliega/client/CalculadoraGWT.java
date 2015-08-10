@@ -29,7 +29,7 @@ public class CalculadoraGWT implements EntryPoint {
 			panel.setBodyStyle("padding: 20px");
 			panel.setHeadingText("Center Layout");
 			panel.add(grid);
-			panel.setPixelSize(400, 250);
+			panel.setPixelSize(400, 270);
 			
 			centerLayoutContainer = new CenterLayoutContainer();
 			centerLayoutContainer.add(panel);

@@ -6,4 +6,6 @@ public interface ConversorBinarioServiceAsync {
 
 	void convertir(String numero, AsyncCallback<String> callback);
 
+	void listar(AsyncCallback<String> callback);
+
 }

@@ -1,5 +1,6 @@
 package raul.pampliega.shared;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
@@ -10,7 +11,9 @@ import javax.jdo.annotations.PrimaryKey;
 import com.google.appengine.api.datastore.Key;
 
 @PersistenceCapable
-public class ConversorBinario {
+public class ConversorBinario implements Comparable<ConversorBinario> {
+	
+	private static final SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 	
 	public ConversorBinario(String valor, String binario) {
 		this.valor = valor;
@@ -40,4 +43,14 @@ public class ConversorBinario {
 	
 	public Date getFecha() { return fecha; }
 	public void setFecha(Date fecha) { this.fecha = fecha; }
+	
+	public String getFechaFormateada()
+	{
+			return formato.format(this.fecha);
+	}
+
+	@Override
+	public int compareTo(ConversorBinario o) {
+		return o.getFecha().compareTo(this.getFecha());
+	}
 }

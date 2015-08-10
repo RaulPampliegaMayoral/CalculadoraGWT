@@ -4,9 +4,9 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.sencha.gxt.cell.core.client.ButtonCell.ButtonScale;
 import com.sencha.gxt.widget.core.client.Composite;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.sencha.gxt.widget.core.client.form.TextField;
 import com.sencha.gxt.widget.core.client.tips.ToolTipConfig;
@@ -17,7 +17,7 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 public class CalculadoraGridPanel extends Composite implements SelectHandler {
 	
-	private final Grid grid = new Grid(5,5);
+	private final Grid grid = new Grid(6,5);
 	
 	private final int OPERADOR_SINOPERADOR = 0;	
 	private final int OPERADOR_SUMA = 1;
@@ -46,6 +46,7 @@ public class CalculadoraGridPanel extends Composite implements SelectHandler {
 	private final TextButton btIgual = new TextButton();
 	private final TextButton btPunto = new TextButton();
 	private final TextButton btBin   = new TextButton();
+	private final TextButton btVisualizar = new TextButton();
 	private final TextField txtNumeros = new TextField();
 	 
 	private float operando = Float.MIN_VALUE;		///Va a indicar el valor del numero antes de pulsar el operando
@@ -80,6 +81,7 @@ public class CalculadoraGridPanel extends Composite implements SelectHandler {
 		configurarBoton(btIgual,"=");
 		configurarBoton(btPunto,".");
 		configurarBoton(btBin,"01001");
+		configurarBoton(btVisualizar, "Visualizar Datos JDO");
 		
 		txtNumeros.setWidth("100%");
 		grid.setWidget(0,0, txtNumeros);
@@ -112,6 +114,11 @@ public class CalculadoraGridPanel extends Composite implements SelectHandler {
 		grid.setWidget(4, 1, btPunto);
 		grid.setWidget(4, 2, btBin);
 		grid.setWidget(4, 4, btIgual);
+		
+		grid.setWidget(5, 0, btVisualizar);
+		///Modifico el DOM para hacerle un colspan
+		Element e1 = grid.getCellFormatter().getElement(5, 0);
+		e1.setAttribute("colspan", "5");
 		
 		txtNumeros.setEnabled(false);
 	}
@@ -219,18 +226,37 @@ public class CalculadoraGridPanel extends Composite implements SelectHandler {
 		}
 		else if( sender == btBin )
 		{
+			RootPanel.get("conversor").clear();
 			conversor.convertir(txtNumeros.getText(), new AsyncCallback<String>() {
 				
 				@Override
 				public void onSuccess(String result) {
-					final ToolTipConfig tooltip = new ToolTipConfig("Código Binario", result);
-					btBin.setToolTipConfig(tooltip);
+					final HTML html = new HTML(result);
+					RootPanel.get("conversor").add(html);
 				}
 				
 				@Override
 				public void onFailure(Throwable caught) {
-					final ToolTipConfig tooltip = new ToolTipConfig("Código Binario", "Fallo al convertir el número");
-					btBin.setToolTipConfig(tooltip);
+					final HTML html = new HTML("Fallo al convertir el número");
+					RootPanel.get("datos").add(html);
+				}
+			});
+		}
+		else if( sender == btVisualizar )
+		{
+			RootPanel.get("datos").clear();
+			conversor.listar(new AsyncCallback<String>() {
+				
+				@Override
+				public void onSuccess(String result) {
+					final HTML html = new HTML(result);
+					RootPanel.get("datos").add(html);
+				}
+
+				@Override
+				public void onFailure(Throwable caught) {
+					final HTML html = new HTML("Error al obtener el listado mediante JDO");
+					RootPanel.get("datos").add(html);
 				}
 			});
 		}
