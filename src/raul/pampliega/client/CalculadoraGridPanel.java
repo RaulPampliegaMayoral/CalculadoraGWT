@@ -1,5 +1,9 @@
 package raul.pampliega.client;
 
+import java.util.List;
+
+import raul.pampliega.shared.ConversorBinarioDTO;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.sencha.gxt.cell.core.client.ButtonCell.ButtonScale;
@@ -9,7 +13,6 @@ import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.sencha.gxt.widget.core.client.form.TextField;
-import com.sencha.gxt.widget.core.client.tips.ToolTipConfig;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -245,18 +248,50 @@ public class CalculadoraGridPanel extends Composite implements SelectHandler {
 		else if( sender == btVisualizar )
 		{
 			RootPanel.get("datos").clear();
-			conversor.listar(new AsyncCallback<String>() {
-				
-				@Override
-				public void onSuccess(String result) {
-					final HTML html = new HTML(result);
-					RootPanel.get("datos").add(html);
-				}
+//			conversor.listar(new AsyncCallback<String>() {
+//				
+//				@Override
+//				public void onSuccess(String result) {
+//					final HTML html = new HTML(result);
+//					RootPanel.get("datos").add(html);
+//				}
+//
+//				@Override
+//				public void onFailure(Throwable caught) {
+//					final HTML html = new HTML("Error al obtener el listado mediante JDO");
+//					RootPanel.get("datos").add(html);
+//				}
+//			});
+			
+			conversor.lista(new AsyncCallback<List<ConversorBinarioDTO>>() {
 
 				@Override
 				public void onFailure(Throwable caught) {
-					final HTML html = new HTML("Error al obtener el listado mediante JDO");
-					RootPanel.get("datos").add(html);
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void onSuccess(List<ConversorBinarioDTO> result) {
+					if( result != null )
+					{
+						StringBuilder buffer = new StringBuilder();
+						buffer.append("<ul>");
+						for(ConversorBinarioDTO c : result)
+						{
+							buffer.append("<li>");
+							buffer.append(c.getValor());
+							buffer.append("&nbsp;-&nbsp;");
+							buffer.append(c.getBinario());
+							buffer.append("&nbsp;-&nbsp;");
+							buffer.append(c.getFecha());
+							buffer.append("</li>");
+						}
+						buffer.append("</ul>");
+						
+						final HTML html = new HTML(buffer.toString());
+						RootPanel.get("datos").add(html);
+					}
 				}
 			});
 		}

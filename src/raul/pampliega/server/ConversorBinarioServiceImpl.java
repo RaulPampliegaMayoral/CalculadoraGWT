@@ -10,6 +10,7 @@ import javax.jdo.Query;
 
 import raul.pampliega.client.ConversorBinarioService;
 import raul.pampliega.shared.ConversorBinario;
+import raul.pampliega.shared.ConversorBinarioDTO;
 import raul.pampliega.shared.PMF;
 
 import com.google.appengine.api.datastore.DatastoreService;
@@ -96,7 +97,7 @@ public class ConversorBinarioServiceImpl extends RemoteServiceServlet implements
 					buffer.append("&nbsp;-&nbsp;");
 					buffer.append(c.getBinario());
 					buffer.append("&nbsp;-&nbsp;");
-					buffer.append(c.getFechaFormateada());
+					buffer.append(ConversorBinario.formato.format(c.getFecha()));
 					buffer.append("</li>");
 				}
 				buffer.append("</ul>");
@@ -105,5 +106,31 @@ public class ConversorBinarioServiceImpl extends RemoteServiceServlet implements
 		finally { q.closeAll(); }
 		
 		return buffer.toString();
+	}
+
+	@Override
+	public List<ConversorBinarioDTO> lista() {
+		
+		List<ConversorBinarioDTO> r = null;
+		///Obtenemos los datos mediante jdo
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+		Query q = pm.newQuery(ConversorBinario.class);
+		try
+		{
+			List<ConversorBinario> resultados = (List<ConversorBinario> )q.execute();
+			pm.detachCopyAll(resultados);
+			Collections.sort(resultados);
+//			r          = new ArrayList<ConversorBinario>(pm.detachCopyAll(resultados));
+			
+			r = new ArrayList<ConversorBinarioDTO>(resultados.size());
+			for(ConversorBinario tmp : resultados)
+			{
+				ConversorBinarioDTO dto = new ConversorBinarioDTO(tmp.getValor(), tmp.getBinario(), ConversorBinario.formato.format(tmp.getFecha()));
+				r.add(dto);
+			}
+		}
+		finally { q.closeAll(); }
+		
+		return r;
 	}
 }

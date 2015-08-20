@@ -13,7 +13,7 @@ import com.google.appengine.api.datastore.Key;
 @PersistenceCapable
 public class ConversorBinario implements Comparable<ConversorBinario> {
 	
-	private static final SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+	public static final SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 	
 	public ConversorBinario(String valor, String binario) {
 		this.valor = valor;
